@@ -24,25 +24,6 @@ import numpy as np
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 
-# Set up file names and locations.
-DATA_PATH = Path('./intermediate_datafiles/')
-DATASET_FNAME = 'chapter2_result.csv'
-RESULT_FNAME =  'chapter3_result_outliers.csv'
-
-# Next, import the data from the specified location and parse the date index.
-try:
-    dataset = pd.read_csv(Path(DATA_PATH / DATASET_FNAME), index_col=0)
-    dataset.index = pd.to_datetime(dataset.index)
-except IOError as e:
-    print('File not found, try to run previous crowdsignals scripts first!')
-    raise e
-
-# We'll create an instance of our visualization class to plot the results.
-DataViz = VisualizeDataset(__file__)
-
-# Of course we repeat some stuff from Chapter 3, namely to load the dataset
-
-# Read the result from the previous chapter, and make sure the index is of the type datetime.
 DATA_PATH = Path('./intermediate_datafiles/')
 DATASET_FNAME = 'chapter5_result.csv'
 

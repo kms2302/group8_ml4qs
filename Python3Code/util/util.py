@@ -1,13 +1,9 @@
-import re
 import scipy
 import copy
 import math
 import numpy as np
 
 # Not a class, just a bunch of useful functions.
-
-def get_chapter(module_path):
-    return re.search('_ch._', 'crowdsignals_ch3_outliers.py').group(0).strip('_')
 
 def normalize_dataset(data_table, columns):
     dt_norm = copy.deepcopy(data_table)
