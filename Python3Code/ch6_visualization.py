@@ -49,7 +49,7 @@ e_df = pd.DataFrame(result, columns=['b', 'a', 'error'])
 Z = e_df['error'].values.reshape(len(X),len(Y))
 
 fig = plot.figure()
-ax = fig.gca(projection='3d')
+ax = fig.add_subplot(111, projection='3d')
 surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='brg_r')
 #ax.scatter(e_df['a'], e_df['b'], e_df['error'])
 ax.set_xlabel('$\\theta_{1}$')

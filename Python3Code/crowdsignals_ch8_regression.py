@@ -24,7 +24,7 @@ import numpy as np
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 
-DATA_PATH = Path('./intermediate_datafiles/')
+DATA_PATH = Path(__file__).parent / 'intermediate_datafiles'
 DATASET_FNAME = 'chapter5_result.csv'
 
 DataViz = VisualizeDataset(__file__)

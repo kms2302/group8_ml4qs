@@ -21,28 +21,28 @@ conda activate myenv
 
 Then, navigate back to the Python3Code folder using cd <path to your ML4QS/Python3Code folder>.
 
-Run the following command to install the required dependencies:
+Run the following commands to install the required dependencies:
 
 ```bash
-pip3 install -r requirements.txt 
+pip install -r requirements.txt
+pip install "setuptools<60" wheel
+pip install --no-build-isolation -r requirements_git.txt
+python patch_pybrain.py
 ```
 
-Note that pyflux cannot be built from source on Windows, so please use the pre-built wheel included in this repository instead of running `pip3 install -r requirements_git.txt` directly. Check your Windows version (32-bit or 64-bit) [here](https://support.microsoft.com/en-us/windows/32-bit-and-64-bit-windows-frequently-asked-questions-c6ca9541-8dce-4d48-0415-94a3faa2e13d) and run the matching command:
-
+If pyflux fails to build (it requires Visual C++ Build Tools), use the pre-built wheel instead, then install pybrain separately and re-run the patch script:
 ```bash
 pip install pyflux_wheel/pyflux-0.4.17-cp38-cp38-win_amd64.whl
 ```
-Or if you have a 32-bit system:
+Or for 32-bit systems:
 ```bash
 pip install pyflux_wheel/pyflux-0.4.17-cp38-cp38-win32.whl
 ```
-
-Then install pybrain by running:
 ```bash
 pip install git+https://github.com/pybrain/pybrain
+python patch_pybrain.py
 ```
-
-It could be the case that pybrain fails with a Visual C++ error. In this case, you need to install Visual Studio Build Tools via the following link: https://visualstudio.microsoft.com/visual-cpp-build-tools/ . Once installed, you need to open it, click on modify and mark 'Desktop development with C++'. Afterwards, you might need to reboot.
+Visual C++ Build Tools can be installed from: https://visualstudio.microsoft.com/visual-cpp-build-tools/ — click Modify and select 'Desktop development with C++'. A reboot may be required.
 
 ## Mac/Linux:
 
@@ -59,13 +59,13 @@ conda activate myenv
 Run the following commands to install the required dependencies:
 
 ```bash
-pip3 install -r requirements.txt 
+pip install -r requirements.txt
+pip install "setuptools<60" wheel
+pip install --no-build-isolation -r requirements_git.txt
+python patch_pybrain.py
 ```
 
-```bash
-pip3 install -r requirements_git.txt 
-```
-In case you run into an error installing PyFlux, please run ```xcode-select --install``` and then re-run ```pip3 install -r requirements_git.txt```.
+If pyflux fails to build, run `xcode-select --install` first, then retry from the `pip install "setuptools<60" wheel` step.
 
 If you have any more questions or can't seem to get the code working on your system, post your question on the Tech Support FAQ on the Canvas message board and we will address your issue ASAP if it is not already answered there.
 

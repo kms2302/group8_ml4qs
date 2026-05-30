@@ -14,7 +14,10 @@ import pandas as pd
 from scipy.stats import norm
 from scipy import stats
 import sys
-from sklearn.neighbors import DistanceMetric
+try:
+    from sklearn.metrics import DistanceMetric
+except ImportError:
+    from sklearn.neighbors import DistanceMetric
 import sklearn
 
 

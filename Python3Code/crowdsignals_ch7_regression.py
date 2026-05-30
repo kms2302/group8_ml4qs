@@ -25,9 +25,9 @@ from Chapter7.FeatureSelection import FeatureSelectionRegression
 DataViz = VisualizeDataset(__file__)
 
 # Read the result from the previous chapter, and make sure the index is of the type datetime.
-DATA_PATH = Path('./intermediate_datafiles/')
+DATA_PATH = Path(__file__).parent / 'intermediate_datafiles'
 DATASET_FNAME = 'chapter5_result.csv'
-EXPORT_TREE_PATH = Path('figures/example_graphs/Chapter7/')
+EXPORT_TREE_PATH = Path(__file__).parent / 'figures/example_graphs/Chapter7'
 
 try:
     dataset = pd.read_csv(DATA_PATH / DATASET_FNAME, index_col=0)

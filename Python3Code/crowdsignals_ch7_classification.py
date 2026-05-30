@@ -29,10 +29,10 @@ from util import util
 from util.VisualizeDataset import VisualizeDataset
 
 # Read the result from the previous chapter, and make sure the index is of the type datetime.
-DATA_PATH = Path('./intermediate_datafiles/')
+DATA_PATH = Path(__file__).parent / 'intermediate_datafiles'
 DATASET_FNAME = 'chapter5_result.csv'
 RESULT_FNAME = 'chapter7_classification_result.csv'
-EXPORT_TREE_PATH = Path('./figures/crowdsignals_ch7_classification/')
+EXPORT_TREE_PATH = Path(__file__).parent / 'figures/crowdsignals_ch7_classification'
 
 # Next, we declare the parameters we'll use in the algorithms.
 N_FORWARD_SELECTION = 50
@@ -109,7 +109,7 @@ start = time.time()
 reg_parameters = [0.0001, 0.001, 0.01, 0.1, 1, 10]
 performance_training = []
 performance_test = []
-## Due to runtime constraints we run the experiment 3 times, yet if you want even more robust data one should increase the repetitions. 
+## Due to runtime constraints we run the experiment 3 times, yet if you want even more robust data one should increase the repetitions.
 N_REPEATS_NN = 3
 
 

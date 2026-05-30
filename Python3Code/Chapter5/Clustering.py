@@ -18,7 +18,10 @@ from Chapter5.DistanceMetrics import PersonDistanceMetricsOrdering
 import random
 import scipy
 from scipy.cluster.hierarchy import linkage, fcluster
-from sklearn.neighbors import DistanceMetric
+try:
+    from sklearn.metrics import DistanceMetric
+except ImportError:
+    from sklearn.neighbors import DistanceMetric
 import pyclust
 
 from nltk.cluster.kmeans import KMeansClusterer

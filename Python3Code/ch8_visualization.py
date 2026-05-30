@@ -18,12 +18,16 @@ from sklearn.decomposition import PCA
 from Chapter4.FrequencyAbstraction import FourierTransformation
 from matplotlib.patches import Rectangle
 import re
+from pathlib import Path
 import sklearn
 import random
 from mpl_toolkits.mplot3d import Axes3D
 from pandas.plotting import autocorrelation_plot
 from statsmodels.tsa.stattools import pacf
-from statsmodels.tsa.arima_model import ARIMA  # statsmodels <0.13 only
+try:
+    from statsmodels.tsa.arima.model import ARIMA  # statsmodels >= 0.13
+except ImportError:
+    from statsmodels.tsa.arima_model import ARIMA
 import pyflux as pf
 from statsmodels.tsa.seasonal import seasonal_decompose
 import statsmodels
@@ -133,8 +137,8 @@ plot.show()
 
 # Figure 8.5
 
-dataset_path = './intermediate_datafiles/'
-dataset = pd.read_csv(dataset_path + 'chapter2_result.csv', index_col=0)
+dataset_path = Path(__file__).parent / 'intermediate_datafiles'
+dataset = pd.read_csv(dataset_path / 'chapter2_result.csv', index_col=0)
 dataset.index = pd.to_datetime(dataset.index)
 
 f, axarr = plot.subplots(1, 2)
@@ -154,8 +158,8 @@ plot.show()
 
 # Figure 8.6
 
-dataset_path = './intermediate_datafiles/'
-dataset = pd.read_csv(dataset_path + 'chapter2_result.csv', index_col=0)
+dataset_path = Path(__file__).parent / 'intermediate_datafiles'
+dataset = pd.read_csv(dataset_path / 'chapter2_result.csv', index_col=0)
 dataset.index = pd.to_datetime(dataset.index)
 
 xfmt = md.DateFormatter('%H:%M')
@@ -177,8 +181,8 @@ plot.show()
 # Figure 8.7
 
 f, axarr = plot.subplots(1, 2)
-dataset_path = 'datasets/crowdsignals/csv-participant-one/'
-dataset = pd.read_csv(dataset_path + 'accelerometer_phone.csv', index_col=0)
+dataset_path = Path(__file__).parent / 'datasets/crowdsignals/csv-participant-one'
+dataset = pd.read_csv(dataset_path / 'accelerometer_phone.csv', index_col=0)
 dataset.index = pd.to_datetime(dataset['timestamps']).values
 del dataset['timestamps']
 dataset = dataset.iloc[400000:404000, dataset.columns.get_loc('x')]
@@ -212,8 +216,14 @@ plot.show()
 
 df = pd.DataFrame(temp_ts[0:500], index=temp_ts.index[0:500], columns=['x'])
 model = ARIMA(df, order=(3,1,2))
-results = model.fit(disp=-1)
-fig = results.plot_predict(200,500)
+results = model.fit()
+pred = results.get_prediction(start=200, end=499)
+pred_mean = pred.predicted_mean
+pred_ci = pred.conf_int()
+fig, ax = plot.subplots()
+ax.plot(df.index[0:500], df['x'][0:500], 'b')
+ax.plot(pred_mean.index, pred_mean, 'r:')
+ax.fill_between(pred_mean.index, pred_ci.iloc[:, 0], pred_ci.iloc[:, 1], color='grey', alpha=0.3)
 xfmt = md.DateFormatter('%H:%M:%S')
 plot.gca().xaxis.set_major_formatter(xfmt)
 
@@ -231,7 +241,10 @@ model = ARIMA(df, order=(3,1,2))
 results = model.fit()
 #fig = results.plot_predict(400,500)
 
-fc, se, conf = results.forecast(100, alpha=0.05)
+forecast_obj = results.get_forecast(steps=100)
+fc = forecast_obj.predicted_mean.values
+conf = forecast_obj.conf_int(alpha=0.05).values
+se = forecast_obj.se_mean.values
 
 plot.plot(temp_ts.index[400:500], fc, 'r:')
 y1 = conf[:, 0]
@@ -249,7 +262,7 @@ plot.show()
 
 xfmt = md.DateFormatter('%H:%M:%S')
 df = pd.DataFrame(temp_ts[0:500], index=pd.to_datetime(temp_ts.index[0:500]), columns=['x'])
-decomposition = seasonal_decompose(np.array(df['x'].values),freq=107)
+decomposition = seasonal_decompose(np.array(df['x'].values), period=107)
 
 seasonal = decomposition.seasonal
 residual = df['x'] - decomposition.seasonal
@@ -279,7 +292,10 @@ plot.show()
 df = pd.DataFrame(residual[0:400], index=temp_ts.index[0:400], columns=['x'])
 model = ARIMA(df, order=(3,1,2))
 results = model.fit()
-fc, se, conf = results.forecast(100, alpha=0.05)
+forecast_obj = results.get_forecast(steps=100)
+fc = forecast_obj.predicted_mean.values
+conf = forecast_obj.conf_int(alpha=0.05).values
+se = forecast_obj.se_mean.values
 
 plot.plot(temp_ts.index[400:500], fc + seasonal[400:500], 'r:')
 y1 = conf[:, 0] + seasonal[400:500]
