@@ -57,18 +57,14 @@ class FourierTransformation:
     def abstract_frequency(self, data_table, columns, window_size, sampling_rate):
         self.freqs = (sampling_rate * np.fft.rfftfreq(int(window_size))).round(3)
 
+        new_col_dfs = []
         for col in columns:
-            collist = []
-            # prepare column names
-            collist.append(col + '_max_freq')
-            collist.append(col + '_freq_weighted')
-            collist.append(col + '_pse')
-            
+            collist = [col + '_max_freq', col + '_freq_weighted', col + '_pse']
             collist = collist + [col + '_freq_' +
                     str(freq) + '_Hz_ws_' + str(window_size) for freq in self.freqs]
-           
-            # rolling statistics to calculate frequencies, per window size. 
-            # Pandas Rolling method can only return one aggregation value. 
+
+            # rolling statistics to calculate frequencies, per window size.
+            # Pandas Rolling method can only return one aggregation value.
             # Therefore values are not returned but stored in temp class variable 'temp_list'.
 
             # note to self! Rolling window_size would be nicer and more logical! In older version windowsize is actually 41. (ws + 1)
@@ -78,13 +74,9 @@ class FourierTransformation:
             # Pad the missing rows with nans
             frequencies = np.pad(np.array(self.temp_list), ((window_size, 0), (0, 0)),
                         'constant', constant_values=np.nan)
-            # add new freq columns to frame
-            
-            data_table[collist] = pd.DataFrame(frequencies, index=data_table.index)
 
-            # reset temp-storage array
+            new_col_dfs.append(pd.DataFrame(frequencies, columns=collist, index=data_table.index))
+
             del self.temp_list[:]
-            
 
-        
-        return data_table
+        return pd.concat([data_table] + new_col_dfs, axis=1)

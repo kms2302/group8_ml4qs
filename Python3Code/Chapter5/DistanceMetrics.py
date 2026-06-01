@@ -14,7 +14,10 @@ import pandas as pd
 from scipy.stats import norm
 from scipy import stats
 import sys
-from sklearn.neighbors import DistanceMetric
+try:
+    from sklearn.metrics import DistanceMetric
+except ImportError:
+    from sklearn.neighbors import DistanceMetric
 import sklearn
 
 
@@ -152,7 +155,7 @@ class PersonDistanceMetricsOrdering:
             if length_used < 1:
                 return self.extreme_value
             # We multiply the values as expressed in the book.
-            ccc = np.multiply(dataset1.ix[0:length_used, i].values, dataset2.ix[lag:length_used+lag, i].values)
+            ccc = np.multiply(dataset1.iloc[0:length_used, i].values, dataset2.iloc[lag:length_used+lag, i].values)
             # We add the sum of the mutliplications to the distance. Correct for the difference in length.
             distance = distance + (float(1)/(float(max(ccc.sum(), self.tiny_value))))/length_used
         return distance

@@ -1,4 +1,4 @@
-##############################################################
+﻿##############################################################
 #                                                            #
 #    Mark Hoogendoorn and Burkhardt Funk (2017)              #
 #    Machine Learning for the Quantified Self                #
@@ -25,6 +25,8 @@ from sklearn.model_selection import GridSearchCV
 import pandas as pd
 import numpy as np
 import os
+import sklearn
+_sklearn_criterion = 'squared_error' if tuple(int(x) for x in sklearn.__version__.split('.')[:2]) >= (1, 0) else 'mse'
 
 class ClassificationAlgorithms:
 
@@ -406,11 +408,11 @@ class RegressionAlgorithms:
     # and use the created model to predict the outcome for both the
     # test and training set. It returns the predictions for the training and test set.
     # Use CV of 3 to make things faster and CV of 3 might be already sufficient enough
-    def decision_tree(self, train_X, train_y, test_X, min_samples_leaf=50, criterion='mse', print_model_details=False, export_tree_path='./figures/crowdsignals_ch7_regression/', export_tree_name='tree.dot', gridsearch=True):
+    def decision_tree(self, train_X, train_y, test_X, min_samples_leaf=50, criterion=_sklearn_criterion, print_model_details=False, export_tree_path='./figures/crowdsignals_ch7_regression/', export_tree_name='tree.dot', gridsearch=True):
         # Create the model
         if gridsearch:
             tuned_parameters = [{'min_samples_leaf': [2, 10, 50, 100, 200],
-                                 'criterion':['mse']}]
+                                 'criterion':[_sklearn_criterion]}]
             dtree = GridSearchCV(DecisionTreeRegressor(), tuned_parameters, cv=5, scoring='neg_mean_squared_error')
         else:
             # Create the model
@@ -449,12 +451,12 @@ class RegressionAlgorithms:
     # Use CV of 3 to make things faster
     # Use n_jobs = -1 which will make use of all of your processors. This could speed up also the calculation
 
-    def random_forest(self, train_X, train_y, test_X, n_estimators=10, min_samples_leaf=5, criterion='mse', print_model_details=False, gridsearch=True):
+    def random_forest(self, train_X, train_y, test_X, n_estimators=10, min_samples_leaf=5, criterion=_sklearn_criterion, print_model_details=False, gridsearch=True):
 
         if gridsearch:
             tuned_parameters = [{'min_samples_leaf': [2, 10, 50, 100, 200],
                                  'n_estimators':[10, 50, 100],
-                                 'criterion':['mse']}]
+                                 'criterion':[_sklearn_criterion]}]
             rf = GridSearchCV(RandomForestRegressor(), tuned_parameters, cv=5, scoring='neg_mean_squared_error')
         else:
             # Create the model
